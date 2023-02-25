@@ -1,14 +1,13 @@
 package org.bootcamp.BankManagement.main.repository;
 
 import org.bootcamp.BankManagement.main.pojo.Account;
-import org.bootcamp.BankManagement.main.pojo.Checking;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class AccountRepository {
 
-    private Map<String, Account> datastore = new HashMap<>();
+    private Map<String, Account> datastore = new TreeMap<>();
 
     public void createAccount(Account account) {
         this.datastore.put(account.getId(), account.clone());
