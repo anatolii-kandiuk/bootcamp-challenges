@@ -17,4 +17,5 @@ public abstract class Account {
         this.id = id;
     }
 
+    public abstract Account clone();
 }
