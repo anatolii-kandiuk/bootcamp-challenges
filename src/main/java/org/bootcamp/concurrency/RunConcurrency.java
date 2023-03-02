@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.concurrent.FutureTask;
 
 public class RunConcurrency {
 // bootcamp-challenges
@@ -20,10 +21,17 @@ public class RunConcurrency {
         try {
             Path path = Paths.get(SALES);
 
-            Thread thread2 = new Thread(() -> furniture = average(path, "Furniture"));
-            Thread thread3 = new Thread(() -> technology = average(path, "Technology"));
-            Thread thread4 = new Thread(() -> supplies = average(path, "Office Supplies"));
-            Thread thread5 = new Thread(() -> average = totalAverage(path));
+            FutureTask<Double> futureTask2 = new FutureTask<>(() -> average(path, "Furniture"));
+            Thread thread2 = new Thread(futureTask2);
+
+            FutureTask<Double> futureTask3 = new FutureTask<>(() -> average(path, "Technology"));
+            Thread thread3 = new Thread(futureTask3);
+
+            FutureTask<Double> futureTask4 = new FutureTask<>(() -> average(path, "Office Supplies"));
+            Thread thread4 = new Thread(futureTask4);
+
+            FutureTask<Double> futureTask5 = new FutureTask<>(() -> totalAverage(path));
+            Thread thread5 = new Thread(futureTask5);
 
             thread2.start();
             thread3.start();
@@ -35,10 +43,10 @@ public class RunConcurrency {
 
             String name = scan.nextLine();
 
-            thread2.join();
-            thread3.join();
-            thread4.join();
-            thread5.join();
+            furniture = futureTask2.get();
+            technology = futureTask3.get();
+            supplies = futureTask4.get();
+            average = futureTask5.get();
 
             System.out.println("\nThank you " + name + ". The average sales for Global Superstore are:\n");
             System.out.println("Average Furniture Sales: " + furniture);
@@ -63,8 +71,7 @@ public class RunConcurrency {
 
 */
 
-
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
 
