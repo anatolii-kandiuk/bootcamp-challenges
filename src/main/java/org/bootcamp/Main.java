@@ -5,10 +5,12 @@ import org.bootcamp.Blackjack.Blackjack;
 import org.bootcamp.Hangman.Hangman;
 import org.bootcamp.Pokerito.Pokerito;
 import org.bootcamp.RockPaperScissor.RockPaperScissor;
+import org.bootcamp.StockTrading.RunTrading;
 import org.bootcamp.TicTacToe.TicTacToe;
 import org.bootcamp.Workbook11.Position;
 import org.bootcamp.Workbook9.Game;
 import org.bootcamp.Workbook9.Team;
+import org.bootcamp.concurrency.RunConcurrency;
 
 import static org.bootcamp.Workbook11.Position.*;
 
@@ -16,7 +18,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        RunApp.run();
+       RunConcurrency.run();
+
+        //RunTrading.run();
 
 //        Team bulls = new Team("Chicago Bulls");
 //
