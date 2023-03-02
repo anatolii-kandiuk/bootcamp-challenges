@@ -1,17 +1,16 @@
 package org.bootcamp.concurrency;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 import java.util.Scanner;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class RunConcurrency {
-// bootcamp-challenges
-    private static final String SALES = "/home/anatolii/Education/Udemy/Java/JavaCore/Bootcamp/bootcamp-challenges/src/main/java/org/bootcamp/concurrency/data/sales.csv";
+    private static final String SALES = "src/main/java/org/bootcamp/concurrency/data/sales.csv";
     private static double furniture = 0;
     private static double technology = 0;
     private static double supplies = 0;
@@ -21,32 +20,26 @@ public class RunConcurrency {
         try {
             Path path = Paths.get(SALES);
 
-            FutureTask<Double> futureTask2 = new FutureTask<>(() -> average(path, "Furniture"));
-            Thread thread2 = new Thread(futureTask2);
+            int nThreads = Runtime.getRuntime().availableProcessors();
 
-            FutureTask<Double> futureTask3 = new FutureTask<>(() -> average(path, "Technology"));
-            Thread thread3 = new Thread(futureTask3);
+            ExecutorService executorService = Executors.newFixedThreadPool(nThreads);
 
-            FutureTask<Double> futureTask4 = new FutureTask<>(() -> average(path, "Office Supplies"));
-            Thread thread4 = new Thread(futureTask4);
-
-            FutureTask<Double> futureTask5 = new FutureTask<>(() -> totalAverage(path));
-            Thread thread5 = new Thread(futureTask5);
-
-            thread2.start();
-            thread3.start();
-            thread4.start();
-            thread5.start();
+            Future<Double> future1 = executorService.submit(() -> average(path, "Furniture"));
+            Future<Double> future2 = executorService.submit(() -> average(path, "Technology"));
+            Future<Double> future3 = executorService.submit(() -> average(path, "Office Supplies"));
+            Future<Double> future4 = executorService.submit(() -> totalAverage(path));
 
             Scanner scan = new Scanner(System.in);
             System.out.print("Please enter your name to access the Global Superstore dataset: ");
 
             String name = scan.nextLine();
 
-            furniture = futureTask2.get();
-            technology = futureTask3.get();
-            supplies = futureTask4.get();
-            average = futureTask5.get();
+            furniture = future1.get();
+            technology = future2.get();
+            supplies = future3.get();
+            average = future4.get();
+
+            executorService.shutdownNow();
 
             System.out.println("\nThank you " + name + ". The average sales for Global Superstore are:\n");
             System.out.println("Average Furniture Sales: " + furniture);
@@ -56,26 +49,9 @@ public class RunConcurrency {
 
             scan.close();
 
-/*
-
-            Thread thread12 = new Thread(() -> System.out.println("thread 12"));
-            Thread thread13 = new Thread(() -> System.out.println("thread 13"));
-            Thread thread14 = new Thread(() -> System.out.println("thread 14"));
-            Thread thread15 = new Thread(() -> System.out.println("thread 15"));
-
-            thread15.start();
-            thread14.start();
-            //thread14.sleep(2000);
-            thread13.start();
-            thread12.start();
-
-*/
-
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
-
     }
 
     /**
